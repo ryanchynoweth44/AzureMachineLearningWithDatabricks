@@ -1,6 +1,6 @@
 import azureml
 from azureml.core import Workspace, Run
-import urllib 
+
 
 
 # ------- COMMAND
@@ -17,9 +17,3 @@ extra_configs = {"fs.azure.account.key."+account_name+".blob.core.windows.net": 
 dbutils.fs.ls("/mnt/" + account_name + "/" + container_name)
 
 
-
-# download data to cluster
-urllib.request.urlretrieve('http://yann.lecun.com/exdb/mnist/train-images-idx3-ubyte.gz', filename='/tmp/train-images.gz')
-urllib.request.urlretrieve('http://yann.lecun.com/exdb/mnist/train-labels-idx1-ubyte.gz', filename='/tmp/train-labels.gz')
-urllib.request.urlretrieve('http://yann.lecun.com/exdb/mnist/t10k-images-idx3-ubyte.gz', filename='/tmp/test-images.gz')
-urllib.request.urlretrieve('http://yann.lecun.com/exdb/mnist/t10k-labels-idx1-ubyte.gz', filename='/tmp/test-labels.gz')

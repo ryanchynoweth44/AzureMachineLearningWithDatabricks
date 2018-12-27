@@ -42,15 +42,9 @@ An Azure Machine Learning Workspace is the building block for training, monitori
 Please make note of your Azure Subscription Id, Resource Group Name, Azure Machine Learning Workspace Name, and Azure Machine Learning Workspace Region. 
 
 ## Get Data
-1. In the "ConfigureCluster" notebook run the following command to download the mnist dataset to our cluster:
-    ```python
-    # download data to cluster
-
-    urllib.request.urlretrieve('http://yann.lecun.com/exdb/mnist/train-images-idx3-ubyte.gz', filename='/tmp/train-images.gz')
-    urllib.request.urlretrieve('http://yann.lecun.com/exdb/mnist/train-labels-idx1-ubyte.gz', filename='/tmp/train-labels.gz')
-    urllib.request.urlretrieve('http://yann.lecun.com/exdb/mnist/t10k-images-idx3-ubyte.gz', filename='/tmp/test-images.gz')
-    urllib.request.urlretrieve('http://yann.lecun.com/exdb/mnist/t10k-labels-idx1-ubyte.gz', filename='/tmp/test-labels.gz')
-    ```
-
-
+1. Download the following files and upload them to your azure storage account and container that you mounted above.  
+    - [Test Images](https://bit.ly/2VaO7cj)
+    - [Test Labels](https://bit.ly/2Ve9Yzx)
+    - [Train Images](https://bit.ly/2GDXqhK)
+    - [Train Labels](https://bit.ly/2V7McW9)
 
