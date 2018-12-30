@@ -20,9 +20,6 @@
     import matplotlib
     import matplotlib.pyplot as plt
 
-    from pyspark.sql.types import *
-    from pyspark.sql.functions import *
-
     # check core SDK version number
     print("Azure ML SDK Version: ", azureml.core.VERSION)
     ```
