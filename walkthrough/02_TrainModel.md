@@ -1,4 +1,5 @@
-# Train an MNIST Model in Azure Databricks
+# Train a MNIST Model in Azure Databricks
+In this step we will connect to our Azure Machine Learning Workspace and train a machine learning model. Since we are using the Azure Machine Learning service we are logging and tracking our experiment in the cloud.   
 
 ## Train Model
 1. Import the required libraries 
@@ -75,10 +76,10 @@
 1. Lets read our data from blob storage into python Arrays. 
     ```python
     # Load data
-    X_train = load_data('/dbfs/mnt/user/blob/' + account_name + '/' + container_name + '/train-images.gz', False) / 255.0
-    y_train = load_data('/dbfs/mnt/user/blob/' + account_name + '/' + container_name + '/train-labels.gz', True).reshape(-1)
-    X_test = load_data('/dbfs/mnt/user/blob/' + account_name + '/' + container_name + '/test-images.gz', False) / 255.0
-    y_test = load_data('/dbfs/mnt/user/blob/' + account_name + '/' + container_name + '/test-labels.gz', True).reshape(-1)
+    X_train = load_data('/dbfs/mnt/' + account_name + '/' + container_name + '/train-images.gz', False) / 255.0
+    y_train = load_data('/dbfs/mnt/' + account_name + '/' + container_name + '/train-labels.gz', True).reshape(-1)
+    X_test = load_data('/dbfs/mnt/' + account_name + '/' + container_name + '/test-images.gz', False) / 255.0
+    y_test = load_data('/dbfs/mnt/' + account_name + '/' + container_name + '/test-labels.gz', True).reshape(-1)
     ```
 
 1. If you wish you can generate one of the images and display it in your notebook.  
@@ -92,59 +93,52 @@
     img = gen_image(X_train[0])
 
     # save image as png
-    img.savefig('/dbfs/mnt/user/blob/' + account_name + '/' + container_name + '/sample_mnist_img.png', mode="overwrite")
+    img.savefig('/dbfs/mnt/' + account_name + '/' + container_name + '/sample_mnist_img.png', mode="overwrite")
 
     # open png and display
     from pyspark.ml.image import ImageSchema
-    image_df = ImageSchema.readImages('/mnt/user/blob/' + account_name + '/' + container_name + '/sample_mnist_img.png')
+    image_df = ImageSchema.readImages('/mnt/' + account_name + '/' + container_name + '/sample_mnist_img.png')
     display(image_df)
     ```
 
-1. Now lets train and test a machine learning model! We are going to train a simple logistic regression model for this example with changinge regularization rates. We save all models to a local output folder but only upload the model with the best accuracy. Please note that since we connected to our Azure Machine Learning Workspace that this model training is being tracked. I would recommend navigating the Azure Portal and click on your workspace.    
+1. Now lets train and test a machine learning model! We are going to train a simple logistic regression model. Please note that since we connected to our Azure Machine Learning Workspace that this model training is being tracked. I would recommend navigating the Azure Portal and click on your workspace.     
     ```python
-    # list of numbers from 0.0 to 1.0 with a 0.05 interval for regularization rates
-    regs = [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1]
-    save_date = str(datetime.datetime.now())
-
-    best_reg = 0
-    last_acc = -1 
     # start the run
     run = exp.start_logging()
 
-    for reg in regs:
-        print("starting reg: " + str(reg))
-        # train a model
-        clf = LogisticRegression(C=1.0/reg, random_state=42)
-        clf.fit(X_train, y_train) 
-        
-        print("Predicting on test dataset")
-        y_hat = clf.predict(X_test)
-        # calculate accuracy on the prediction
-        acc = np.average(y_hat == y_test)
-        print('Accuracy is', acc)
-        # track which model is best
-        if acc > last_acc:
-            best_reg = reg
-        
-        run.log('regularization rate', np.float(reg))
-        run.log('accuracy', np.float(acc))
-        os.makedirs('outputs', exist_ok=True)
-        # note file saved in the outputs folder is automatically uploaded into experiment record
-        joblib.dump(value=clf, filename='outputs/reg_' + reg + '_sklearn_mnist_model.pkl')
+    # train a model
+    clf = LogisticRegression()
+    clf.fit(X_train, y_train) 
 
-    # upload the best model file explicitly into artifacts 
-    run.upload_file(name = 'sklearn_mnist_model.pkl', path_or_stream = 'outputs/reg_' + best_reg + '_sklearn_mnist_model.pkl')
+    # predict on test
+    y_hat = clf.predict(X_test)
+
+    # calculate accuracy on the prediction
+    acc = np.average(y_hat == y_test)
+        
+    run.log('accuracy', np.float(acc))
+    os.makedirs('outputs', exist_ok=True)
+
+    # note file saved in the outputs folder is automatically uploaded into experiment record
+    joblib.dump(value=clf, filename='outputs/sklearn_mnist_model.pkl')
+    ```
+
+1. In the step above we trained a model and saved it locally to a folder on the cluster. We will now want to upload the model and register it to model management. We also save the model to our mounted directory so that we can more easily access the saved model in a databricks environment. Please note that you should save the model to the model management account and a mounted directory so that it is accessible in different environments.    
+    ```python
+    # upload the model file explicitly into artifacts 
+    run.upload_file(name = 'sklearn_mnist_model.pkl', path_or_stream = 'outputs/sklearn_mnist_model.pkl')
     # register the model 
-    run.register_model(model_name = 'sklearn_mnist_model.pkl', model_path = 'outputs/reg_' + best_reg + '_sklearn_mnist_model.pkl' )
-    # tag the run with the best regularization rate
-    run.tag("Regularization Rate", best_reg)
+    run.register_model(model_name = 'sklearn_mnist_model.pkl', model_path = 'outputs/sklearn_mnist_model.pkl' )
+
+    # save model to mounted dbfs directory's latest folder
+    dbutils.fs.cp("file:" + os.getcwd() + "/outputs/sklearn_mnist_model.pkl", '/dbfs/mnt/' + account_name + '/' + container_name + '/models/latest/sklearn_mnist_model.pkl', True)
 
     run.take_snapshot('outputs')
     # Complete the run
     run.complete()
     ```
 
-1. Because we are logging and saving everything to our workspace we can navigate the Azure Portal and look at our experiment runs. Here is an example of what mine looks like with two completed runs and one in progress. You can also navigate to the "Models" tab to see the model we just registered to the workspace as well.     
+1. Because we are logging and saving everything to our workspace we can navigate the Azure Portal and look at our experiment runs. Here is an example of what mine looks like with two completed runs and one in progress. You can also navigate to the "Models" tab to see the model we just registered to the workspace as well.  
     ![](./imgs/02_AML_Workspace.png) 
 
-1. We have now trained a machine learning model! We have tracked the training and saved our model to our Azure Machine Learning Workspace, therefore, we are ready to prepare and deploy our model! Please complete the [Deploy Model Walkthrough](03_DeployModel.md) to learn how to deploy a model in Azure Databricks and to Azure Kubernetes Service.  
+1. We have now trained a machine learning model! We have tracked the training and saved our model to our Azure Machine Learning Workspace, therefore, we are ready to prepare and deploy our model! Please complete the [Deploy Model Walkthrough](03_DeployModel.md) to learn how to deploy a model in Azure Databricks and to Azure Container Instance.  
