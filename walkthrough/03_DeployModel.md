@@ -1,7 +1,7 @@
 # Deploy a MNIST Model using Azure Machine Learning service 
 In this step we will walkthrough how to take the model we trained using Azure Databricks, and deploy it to Azure Container Instance.  
 
-Please note that this walkthrough follows similarly to this [demo](https://github.com/Azure/MachineLearningNotebooks/blob/fb6a73a7906bcde374887c8fafbce7ae290db435/tutorials/img-classification-part2-deploy.ipynb) by microsoft. 
+Please note that this walkthrough follows similarly to this [demo](https://github.com/Azure/MachineLearningNotebooks/blob/fb6a73a7906bcde374887c8fafbce7ae290db435/tutorials/img-classification-part2-deploy.ipynb) by Microsoft. 
 
 ## Setting up the environment
 1. Create a new python notebook called "DeployModel". 
@@ -42,17 +42,19 @@ Please note that this walkthrough follows similarly to this [demo](https://githu
     # copy the model to local directory for deployment
     model_name = "sklearn_mnist_model.pkl"
     deploy_folder = os.getcwd()
-    dbutils.fs.cp('/dbfs/mnt/user/blob/' + account_name + '/' + container_name + '/models/latest/' + model_name, "file:" + os.getcwd() + "/" + model_name, True)
+    dbutils.fs.cp('/dbfs/mnt/' + account_name + '/' + container_name + '/models/latest/' + model_name, "file:" + deploy_folder + "/" + model_name, True)
+    ```
+
+1. Since we are deploying a model we will want to first register it with our AML Service workspace.  
+    ```python
+    # register the model 
+    mymodel = Model.register(model_name = model_name, model_path = model_name, description = "Trained MNIST model", workspace = ws )
     ```
 
 1. Next we need to write a scoring file to our cluster as well. This is the code that will execute when the web service is called.  
     ```python
-    #%%writefile score_sparkml.py
+    #%%writefile score.py
     score = """
-    
-    import json
-    
-    def init():
     import json
     import numpy as np
     import os
@@ -61,11 +63,12 @@ Please note that this walkthrough follows similarly to this [demo](https://githu
     from sklearn.linear_model import LogisticRegression
 
     from azureml.core.model import Model
-        
-    global model 
-        
-    model_name = "{model_name}"
-    model = joblib.load('./' + model_name)
+    
+    def init():    
+    global model
+    # retreive the path to the model file using the model name
+    model_path = Model.get_model_path('{model_name}')
+    model = joblib.load(model_path)
         
         
     def run(raw_data):
@@ -81,8 +84,8 @@ Please note that this walkthrough follows similarly to this [demo](https://githu
     
     exec(score)
     
-    with open(deploy_folder + "/score.py", "w") as file:
-        file.write(score_sparkml)
+    with open("score.py", "w") as file:
+        file.write(score)
     ```
 
 1. Next we need to create our config file for deployment. 
@@ -90,9 +93,9 @@ Please note that this walkthrough follows similarly to this [demo](https://githu
     # Create a dependencies file
     from azureml.core.conda_dependencies import CondaDependencies 
 
-    myenv = CondaDependencies.create(conda_packages=['scikit-learn','numpy']) #showing how to add libs as an eg. - not needed for this model.
+    myenv = CondaDependencies.create(conda_packages=['scikit-learn']) #showing how to add libs as an eg. - not needed for this model.
 
-    with open(deploy_folder + "/myenv.yml","w") as f:
+    with open("myenv.yml","w") as f:
         f.write(myenv.serialize_to_string())
     ```
 
@@ -121,7 +124,7 @@ Please note that this walkthrough follows similarly to this [demo](https://githu
     service = Webservice.deploy_from_model(workspace=ws,
                                         name='sklearn-mnist-svc',
                                         deployment_config=myaci_config,
-                                        models=[model_name],
+                                        models=[mymodel],
                                         image_config=image_config)
 
     service.wait_for_deployment(show_output=True)
@@ -139,6 +142,35 @@ Please note that this walkthrough follows similarly to this [demo](https://githu
 1. You can print the url of the web service if you wish.  
     ```python
     print(service.scoring_uri)
+    ```
+
+1. For testing purposes run the following command to get test data. 
+    ```python
+    import gzip
+    import numpy as np
+    import struct
+    # load compressed MNIST gz files and return numpy arrays
+    def load_data(filename, label=False):
+        with gzip.open(filename) as gz:
+            struct.unpack('I', gz.read(4))
+            n_items = struct.unpack('>I', gz.read(4))
+            if not label:
+                n_rows = struct.unpack('>I', gz.read(4))[0]
+                n_cols = struct.unpack('>I', gz.read(4))[0]
+                res = np.frombuffer(gz.read(n_items[0] * n_rows * n_cols), dtype=np.uint8)
+                res = res.reshape(n_items[0], n_rows * n_cols)
+            else:
+                res = np.frombuffer(gz.read(n_items[0]), dtype=np.uint8)
+                res = res.reshape(n_items[0], 1)
+        return res
+
+
+    # one-hot encode a 1-D array
+    def one_hot_encode(array, num_of_classes):
+        return np.eye(num_of_classes)[array.reshape(-1)]
+
+    X_test = load_data('/dbfs/mnt/' + account_name + '/' + container_name + '/test-images.gz', False) / 255.0
+    y_test = load_data('/dbfs/mnt/' + account_name + '/' + container_name + '/test-labels.gz', True).reshape(-1)
     ```
 
 1. Let's quickly test and make sure our web service is working. Run the following code to see if it works. 
@@ -160,6 +192,4 @@ Please note that this walkthrough follows similarly to this [demo](https://githu
     print("prediction:", resp.text)
     ```
 
-1. You have now successfully deployed a scikit learn model using the Azure Machine Learning service! 
-
-
+1. You have now successfully deployed a scikit learn model using the Azure Machine Learning service! You will likely want to clean up the azure machine learning workspace in order to avoid charges. Navigate to the Azure Portal and find your workspace. The click on "Deployments" to delete the container we just deployed.  

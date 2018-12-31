@@ -127,8 +127,6 @@ In this step we will connect to our Azure Machine Learning Workspace and train a
     ```python
     # upload the model file explicitly into artifacts 
     run.upload_file(name = 'sklearn_mnist_model.pkl', path_or_stream = 'outputs/sklearn_mnist_model.pkl')
-    # register the model 
-    run.register_model(model_name = 'sklearn_mnist_model.pkl', model_path = 'outputs/sklearn_mnist_model.pkl' )
 
     # save model to mounted dbfs directory's latest folder
     dbutils.fs.cp("file:" + os.getcwd() + "/outputs/sklearn_mnist_model.pkl", '/dbfs/mnt/' + account_name + '/' + container_name + '/models/latest/sklearn_mnist_model.pkl', True)
