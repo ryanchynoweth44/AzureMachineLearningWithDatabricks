@@ -4,7 +4,7 @@ This repository highlights the workflow and ease of use to train machine learnin
 We will be using the popular MNIST dataset, and will be following closely with this Azure Machine Learning Service example of [training a model](https://github.com/Azure/MachineLearningNotebooks/blob/master/tutorials/img-classification-part1-training.ipynb). The walkthrough also teaches users how to [deploy models](https://github.com/Azure/MachineLearningNotebooks/blob/fb6a73a7906bcde374887c8fafbce7ae290db435/tutorials/img-classification-part2-deploy.ipynb) using the Azure Machine Learning service. The linked example is ran using Azure Notebooks, which is an excellent way to use cloud compute resources while staying in a Jupyter environment. The key difference here is that we will be using Azure Databricks to train and deploy our model.   
 
 ## Blog
-This type of model training and deployment is common with clients I work with. Therefore, I wrote a [blog](./blog/AMLWithDatabricks.md) describing tips and why a developer would choose to deploy using AML Service and Databricks.  
+This type of model training and deployment is common with clients I work with. Therefore, I wrote a [blog](https://ryansdataspot.com/2019/02/08/azure-machine-learning-services-and-azure-databricks/) describing tips and why a developer would choose to deploy using AML Service and Databricks.  
 
 ## Walkthrough
 Please complete the following in order for an end to end implementation:  
