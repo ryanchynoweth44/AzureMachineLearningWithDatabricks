@@ -17,4 +17,4 @@ Please complete the following in order for an end to end implementation:
 The walkthrough shows how to do manual deployments of models using AML Service, however, one thing to keep in mind is that typically these would be automated with build and release pipelines ([Azure DevOps](https://azure.microsoft.com/en-us/services/devops/)). If a data scientist wishes to deploy the model to a web service environment as shown in the walkthrough I would recommend the pipelines access the models directly from the model management azure machine learning workspace, while if a streaming solution is desired I would access the model directly from a databricks file system mount. 
 
 ## Conclusion
-This repo aims to provide an overview of both Azure Databricks and Azure Machine Learning Services. If there are any confusing steps or errors please let me know. Any other comments or questions you can contact me at rchynoweth@10thmagnitude.com. 
+This repo aims to provide an overview of both Azure Databricks and Azure Machine Learning Services. If there are any confusing steps or errors please let me know. Any other comments or questions you can contact me at ryanachynoweth@gmail.com.
