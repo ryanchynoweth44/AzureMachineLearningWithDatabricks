@@ -7,7 +7,7 @@ The following portion of the demo shows users how to create a MLFlow Experiment 
 1. Create an MLFlow Experiment in your Azure Databricks Workspace, please provide the name "MLFlowExp" and an artifact location of the mount we created in the configure cluster portion of the demo `dbfs:/mnt/<storage_name>/<container_name>/MLFlowExp`. 
     ![](./imgs/CreateMLFlowExp.png)
 
-1. Once we have an experiment it is time to create our [`TrainWithMLFlow`](../code/01_TrainWithMLFlow.py) Databricks Notebook. Please note that I am creating a folder in my workspace called "AzureML_MLFlow" and I will be running my notebooks from there.  
+1. Once we have an experiment it is time to create our [`TrainWithMLFlow`](../Code/01_TrainWithMLFlow.py) Databricks Notebook. Please note that I am creating a folder in my workspace called "AzureML_MLFlow" and I will be running my notebooks from there.  
 
 1. Now let's import the libraries we will be using. 
     ```python

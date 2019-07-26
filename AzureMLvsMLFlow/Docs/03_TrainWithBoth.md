@@ -4,7 +4,7 @@ This section of the demo highlights how users can use Azure Machine Learning as 
 
 
 
-1. Let's create a notebook called [`TrainWithAMLandMLFlow`](../code/03_TrainWithAMLandMLFlow.py).  
+1. Let's create a notebook called [`TrainWithAMLandMLFlow`](../Code/03_TrainWithAMLandMLFlow.py).  
 
 1. Import our libraries. 
     ```python

@@ -2,7 +2,7 @@
 
 This portion of the demo is very similar to the demo previously provided in my [Azure Machine Learning with Azure Databricks demo](https://ryansdataspot.com/2019/02/08/azure-machine-learning-services-and-azure-databricks/). However, for the sake on consolidation for this demo I provide another example here. Azure Machine Learning is very similar to MLFlow by allowing engineers to track and log experiments over time. However, Azure ML extends past where MLFlow ends by giving users the ability to manage models, deployments, and data pipelines. For more information on deploying with Azure ML please check out my blog mentioned previously.  
 
-1. Let's create a new Python Notebook called [`TrainWithAzureML`](../code/02_TrainWithAzureML.py). 
+1. Let's create a new Python Notebook called [`TrainWithAzureML`](../Code/02_TrainWithAzureML.py). 
 
 1. Next we will import our libraries. 
     ```python
