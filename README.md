@@ -25,7 +25,7 @@ Please complete the following in order for an end to end implementation:
 1. [Set up your Azure environment](./AzureMLvsMLFlow/Docs/00_SetUpAzureEnvironment.md)
 1. [Train a machine learning model with MLFlow](./AzureMLvsMLFlow/Docs/01_TrainWithMLFlow.md)
 1. [Train a machine learning model with AzureML](./AzureMLvsMLFlow/Docs/02_TrainWithAzureML.md)
-1. [Cross Validation with MLFlow](./AzureMLvsMLFlow/Docs/02_TrainWithAzureML.md)
+1. [Cross Validation with MLFlow](./AzureMLvsMLFlow/Docs/03_CrossValidation.md)
 1. [Cross Validation with MLFlow and Azure ML](./AzureMLvsMLFlow/Docs/04_TrainWithBoth.md)
 
 ### Automation
