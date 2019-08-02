@@ -2,14 +2,15 @@
 
 ## Configure Azure Databricks
 1. Create an Azure Databricks Resource. Follow the instructions available [here](https://docs.microsoft.com/en-us/azure/azure-databricks/quickstart-create-databricks-workspace-portal).  
-1. In the newly created Azure Databricks workspace. Create a databricks cluster. Please note an cluster with a max of 2 VMs using Standard_D3_v2 machines will suffice. Please note the example cluster below.  
-![](./imgs/cluster.png)
+1. In the newly created Azure Databricks workspace. Create a databricks cluster. Please note an cluster with a max of 2 VMs using Standard_D3_v2 machines will suffice, and make sure you select Databricks Runtime Version 5.4 ML.   
+![](./imgs/Cluster.png)
 
 1. Next we will need to install the Azure ML Python SDK. Create a [library](https://docs.databricks.com/user-guide/libraries.html#create-a-library) in Azure Databricks by importing the ```azureml-sdk[databricks]``` pypi library.  
 
-1. We will also need to install the MLFlow library. Create a [library](https://docs.databricks.com/user-guide/libraries.html#create-a-library) in Azure Databricks by importing the `mlflow` pypi library.  
+1. We will also need to install the MLFlow library. Create a [library](https://docs.databricks.com/user-guide/libraries.html#create-a-library) in Azure Databricks by importing the `mlflow` pypi library. 
 
-1. We will also need to install the MLFlow library. Create a [library](https://docs.databricks.com/user-guide/libraries.html#create-a-library) in Azure Databricks by importing the `azureml-contrib-run` pypi library. Please note that you may need to restart you Databricks cluster. 
+1. Lastly, install another AzureML library. Create a [library](https://docs.databricks.com/user-guide/libraries.html#create-a-library) in Azure Databricks by importing the `azureml-contrib-run` pypi library. Please note that you may need to restart you Databricks cluster. 
+
 
 1. Verify that the library was installed successfully by creating a notebook called "ConfigureCluster". Then paste the following code into a cell and run it.  
     ```python

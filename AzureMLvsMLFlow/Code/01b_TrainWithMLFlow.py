@@ -1,38 +1,13 @@
 # Databricks notebook source
-# MLFlow Notebook
 import mlflow
 from mlflow.tracking import MlflowClient
-import azureml
-from azureml.core import Workspace, Run, Experiment
-
-import os, shutil
-
 from pyspark.ml.regression import DecisionTreeRegressor
 from pyspark.ml.evaluation import RegressionEvaluator
 from pyspark.ml import Pipeline
 import datetime as dt
 from pyspark.ml.feature import OneHotEncoder, VectorAssembler
+
 from pyspark.ml.tuning import CrossValidator, ParamGridBuilder 
-
-# COMMAND ----------
-
-# set aml workspace parameters here. 
-subscription_id = ""
-resource_group = ""
-workspace_name = ""
-workspace_region = ""
-
-ws = Workspace(subscription_id = subscription_id, resource_group = resource_group, workspace_name = workspace_name)
-
-# COMMAND ----------
-
-mlflow.set_tracking_uri(ws.get_mlflow_tracking_uri())
-
-# COMMAND ----------
-
-# create experiment
-experiment_name = 'bikeSharingDemandMLFlowAML'
-exp = Experiment(workspace=ws, name=experiment_name)
 
 # COMMAND ----------
 
@@ -40,16 +15,32 @@ spark.conf.set("spark.databricks.mlflow.trackMLlib.enabled", "true")
 
 # COMMAND ----------
 
-mlflow.set_experiment(experiment_name)
-
-run = mlflow.start_run()
-run_id = run.info.run_uuid
-exp_id = run.info.experiment_id
-artifact_location = run.info.artifact_uri
+# MAGIC %scala
+# MAGIC val tags = com.databricks.logging.AttributionContext.current.tags
+# MAGIC val username = tags.getOrElse(com.databricks.logging.BaseTagDefinitions.TAG_USER, java.util.UUID.randomUUID.toString.replace("-", ""))
+# MAGIC spark.conf.set("com.databricks.demo.username", username)
 
 # COMMAND ----------
 
-azRun = Run(exp, run_id)
+client = MlflowClient() # client
+exps = client.list_experiments() # get all experiments
+
+# COMMAND ----------
+
+exps
+
+# COMMAND ----------
+
+exp = [s for s in exps if "/Users/{}/exps/MLFlowExp".format(spark.conf.get("com.databricks.demo.username")) in s.name][0] # get only the exp we want
+exp_id = exp.experiment_id # save exp id to variable
+artifact_location = exp.artifact_location # artifact location for storing
+run = client.create_run(exp_id) # create the run
+run_id = run.info.run_id # get the run id
+
+# COMMAND ----------
+
+# start and mlflow run
+mlflow.start_run(run_id)
 
 # COMMAND ----------
 
@@ -63,6 +54,8 @@ df = (spark
 # split data
 train_df, test_df = df.randomSplit([0.7, 0.3])
 
+# COMMAND ----------
+
 # One Hot Encoding
 mnth_encoder = OneHotEncoder(inputCol="mnth", outputCol="encoded_mnth")
 weekday_encoder = OneHotEncoder(inputCol="weekday", outputCol="encoded_weekday")
@@ -73,8 +66,12 @@ train_cols = ['encoded_mnth', 'encoded_weekday', 'temp', 'hum']
 # convert cols to a single features col
 assembler = VectorAssembler(inputCols=train_cols, outputCol="features")
 
-# Set model
+
+# COMMAND ----------
+
 dt = DecisionTreeRegressor(featuresCol="features", labelCol="cnt")
+
+# COMMAND ----------
 
 # Create pipeline
 pipeline = Pipeline(stages=[
@@ -102,14 +99,16 @@ cv = CrossValidator(estimator=pipeline, evaluator=valid_eval, estimatorParamMaps
 # COMMAND ----------
 
 cvModel = cv.fit(train_df)
-mlflow.set_tag('owner_team', "Ryan") # Logs user-defined tags
+mlflow.set_tag('owner_team', spark.conf.get("com.databricks.demo.username")) # Logs user-defined tags
 test_metric = valid_eval.evaluate(cvModel.transform(test_df))
 mlflow.log_metric('test_' + valid_eval.getMetricName(), test_metric) # Logs additional metrics
 
+
 # COMMAND ----------
 
+bestModel = cvModel.bestModel
 # write test predictions to datetime and lastest folder
-predictions = cvModel.transform(test_df)
+predictions = bestModel.transform(test_df)
 # mlflow log evaluations
 evaluator = RegressionEvaluator(labelCol = "cnt", predictionCol = "prediction")
 
@@ -119,40 +118,15 @@ mlflow.log_metric("r2", evaluator.evaluate(predictions, {evaluator.metricName: "
 
 # COMMAND ----------
 
-bestModel = cvModel.bestModel
+lrPipelineModel.write().overwrite().save("{}/latest/bike_sharing_model.model".format(artifact_location))
+lrPipelineModel.write().overwrite().save("{}/year={}/month={}/day={}/bike_sharing_model.model".format(artifact_location, dt.datetime.utcnow().year, dt.datetime.utcnow().month, dt.datetime.utcnow().day))
+
+# write test predictions to datetime and lastest folder
+
+predictions.write.format("parquet").mode("overwrite").save("{}/latest/test_predictions.parquet".format(artifact_location))
+predictions.write.format("parquet").mode("overwrite").save("{}/year={}/month={}/day={}/test_predictions.parquet".format(artifact_location, dt.datetime.utcnow().year, dt.datetime.utcnow().month, dt.datetime.utcnow().day))
+mlflow.set_tag("Model Path", "{}/year={}/month={}/day={}".format(artifact_location, dt.datetime.utcnow().year, dt.datetime.utcnow().month, dt.datetime.utcnow().day))
 
 # COMMAND ----------
 
-model_nm = "bikeshare.mml"
-model_output = '/mnt/azml/outputs/'+model_nm
-model_dbfs = "/dbfs"+model_output
-bestModel.write().overwrite().save(model_output)
-
-# COMMAND ----------
-
-model_name, model_ext = model_dbfs.split(".")
-
-# COMMAND ----------
-
-model_zip = model_name + ".zip"
-shutil.make_archive(model_name, 'zip', model_dbfs)
-azRun.upload_file("outputs/" + model_nm, model_zip)
-
-# COMMAND ----------
-
-azRun.register_model(model_name = 'model_nm', model_path = "outputs/" + model_nm)
-
-# COMMAND ----------
-
-# now delete the serialized model from local folder since it is already uploaded to run history 
-shutil.rmtree(model_dbfs)
-os.remove(model_zip)
-
-# COMMAND ----------
-
-for a in azRun.get_children():
-  Run(exp, a.id).complete()
-
-# COMMAND ----------
-
-mlflow.end_run()
+mlflow.end_run(status="FINISHED")
