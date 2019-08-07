@@ -1,12 +1,11 @@
 # Azure Machine Learning With Azure Databricks
-This repository highlights the workflow and ease of use to train machine learning or deep learning models using Azure Databricks. Then deploying those models on both the AML Service and Azure Databricks. There are many demos and documentation of this workflow available by Microsoft, however, I hope to provide and end to end walkthrough in a single location.   
+This repository highlights the workflow and ease of use to train machine learning or deep learning models using Azure Databricks.
 
-We will be using the popular MNIST dataset, and will be following closely with this Azure Machine Learning Service example of [training a model](https://github.com/Azure/MachineLearningNotebooks/blob/master/tutorials/img-classification-part1-training.ipynb). The walkthrough also teaches users how to [deploy models](https://github.com/Azure/MachineLearningNotebooks/blob/fb6a73a7906bcde374887c8fafbce7ae290db435/tutorials/img-classification-part2-deploy.ipynb) using the Azure Machine Learning service. The linked example is ran using Azure Notebooks, which is an excellent way to use cloud compute resources while staying in a Jupyter environment. The key difference here is that we will be using Azure Databricks to train and deploy our model.   
 
 ## Blogs
 
 ### Azure Machine Learning on Azure Databricks
-Azure Machine Learning and Azure Databricks are two of the most popular data science tools my clients use on the Azure Platform. Taking advantage of both and deploying models as a batch/streaming service on Databricks and RESTful as an API in the Azure ML Service is easy to do. Therefore, I wrote a [blog](https://ryansdataspot.com/2019/02/08/azure-machine-learning-services-and-azure-databricks/) describing tips and why a developer would choose to deploy using AML Service and Databricks.  
+Azure Machine Learning and Azure Databricks are two of the most popular data science tools my clients use on the Azure Platform. Taking advantage of both and deploying models as a batch/streaming service on Databricks and RESTful as an API in the Azure ML Service is easy to do. Therefore, I wrote a [blog](https://ryansdataspot.com/2019/02/08/azure-machine-learning-services-and-azure-databricks/) describing tips and why a developer would choose to deploy using AML Service and Databricks. 
 
 ### Azure Machine Learning vs MLFlow
 Azure Machine Learning and MLFlow are two very similar tools. In this blog I described the advantages and disadvantages of both tools, and how they can be used together with Azure Databricks. Check out my [blog](https://ryansdataspot.com/2019/08/07/azure-machine-learning-vs-mlflow/) discussing the tools at a high-level. 
@@ -15,6 +14,7 @@ Azure Machine Learning and MLFlow are two very similar tools. In this blog I des
 ## Demos
 
 **Azure Machine Learning with Azure Databricks**  
+We will be using the popular MNIST dataset, and will be following closely with this Azure Machine Learning Service example of [training a model](https://github.com/Azure/MachineLearningNotebooks/blob/master/tutorials/img-classification-part1-training.ipynb). The walkthrough also teaches users how to [deploy models](https://github.com/Azure/MachineLearningNotebooks/blob/fb6a73a7906bcde374887c8fafbce7ae290db435/tutorials/img-classification-part2-deploy.ipynb) using the Azure Machine Learning service. The linked example is ran using Azure Notebooks, which is an excellent way to use cloud compute resources while staying in a Jupyter environment. The key difference here is that we will be using Azure Databricks to train and deploy our model.   
 Please complete the following in order for an end to end implementation:  
 1. [Set up your Azure environment](./AzureMLWithAzureDatabricks/walkthrough/01_SetUpAzureEnvironment)
 1. [Train a machine learning model](./AzureMLWithAzureDatabricks/walkthrough/02_TrainModel.md)
