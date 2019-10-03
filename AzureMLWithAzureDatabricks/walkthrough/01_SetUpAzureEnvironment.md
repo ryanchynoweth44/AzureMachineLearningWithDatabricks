@@ -43,8 +43,8 @@ Please make note of your Azure Subscription Id, Resource Group Name, Azure Machi
 
 ## Get Data
 1. Download the following files and upload them to your azure storage account and container that you mounted above.  
-    - [Test Images](https://bit.ly/2VaO7cj)
-    - [Test Labels](https://bit.ly/2Ve9Yzx)
-    - [Train Images](https://bit.ly/2GDXqhK)
-    - [Train Labels](https://bit.ly/2V7McW9)
+    - [Test Images](http://yann.lecun.com/exdb/mnist/t10k-images-idx3-ubyte.gz)
+    - [Test Labels](http://yann.lecun.com/exdb/mnist/t10k-labels-idx1-ubyte.gz)
+    - [Train Images](http://yann.lecun.com/exdb/mnist/train-images-idx3-ubyte.gz)
+    - [Train Labels](http://yann.lecun.com/exdb/mnist/train-labels-idx1-ubyte.gz)
 
