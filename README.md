@@ -5,10 +5,10 @@ This repository highlights the workflow and ease of use to train machine learnin
 ## Blogs
 
 ### Azure Machine Learning on Azure Databricks
-Azure Machine Learning and Azure Databricks are two of the most popular data science tools my clients use on the Azure Platform. Taking advantage of both and deploying models as a batch/streaming service on Databricks and RESTful as an API in the Azure ML Service is easy to do. Therefore, I wrote a [blog](https://ryansdataspot.com/2019/02/08/azure-machine-learning-services-and-azure-databricks/) describing tips and why a developer would choose to deploy using AML Service and Databricks. 
+Azure Machine Learning and Azure Databricks are two of the most popular data science tools my clients use on the Azure Platform. Taking advantage of both and deploying models as a batch/streaming service on Databricks and RESTful as an API in the Azure ML Service is easy to do. Therefore, I wrote a [blog](https://github.com/ryanchynoweth44/AzureMachineLearningWithDatabricks/blob/master/AzureMLWithAzureDatabricks/blog/AMLWithDatabricks.md) describing tips and why a developer would choose to deploy using AML Service and Databricks. 
 
 ### Azure Machine Learning vs MLFlow
-Azure Machine Learning and MLFlow are two very similar tools. In this blog I described the advantages and disadvantages of both tools, and how they can be used together with Azure Databricks. Check out my [blog](https://ryansdataspot.com/2019/08/07/azure-machine-learning-vs-mlflow/) discussing the tools at a high-level. 
+Azure Machine Learning and MLFlow are two very similar tools. In this blog I described the advantages and disadvantages of both tools, and how they can be used together with Azure Databricks. Check out my [blog](https://github.com/ryanchynoweth44/AzureMachineLearningWithDatabricks/blob/master/AzureMLvsMLFlow/Docs/AzureMLAndMLFlow.md) discussing the tools at a high-level. 
 
 
 ## Demos
