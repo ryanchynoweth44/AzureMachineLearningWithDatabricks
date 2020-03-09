@@ -1,5 +1,7 @@
 # Azure Machine Learning With Azure Databricks
-This repository highlights the workflow and ease of use to train machine learning or deep learning models using Azure Databricks.
+This repository highlights the workflow and ease of use to train machine learning or deep learning models using Azure Databricks. 
+
+PLEASE NOTE THAT THIS REPOSITORY IS NOT ACTIVELY MAINTAINED, BUT WILL BE UPDATED AS ISSUES ARE CREATED.  
 
 
 ## Blogs
