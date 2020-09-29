@@ -4,14 +4,6 @@ This repository highlights the workflow and ease of use to train machine learnin
 PLEASE NOTE THAT THIS REPOSITORY IS NOT ACTIVELY MAINTAINED, BUT WILL BE UPDATED AS ISSUES ARE CREATED.  
 
 
-## Blogs
-
-### Azure Machine Learning on Azure Databricks
-Azure Machine Learning and Azure Databricks are two of the most popular data science tools my clients use on the Azure Platform. Taking advantage of both and deploying models as a batch/streaming service on Databricks and RESTful as an API in the Azure ML Service is easy to do. Therefore, I wrote a [blog](https://github.com/ryanchynoweth44/AzureMachineLearningWithDatabricks/blob/master/AzureMLWithAzureDatabricks/blog/AMLWithDatabricks.md) describing tips and why a developer would choose to deploy using AML Service and Databricks. 
-
-### Azure Machine Learning vs MLFlow
-Azure Machine Learning and MLFlow are two very similar tools. In this blog I described the advantages and disadvantages of both tools, and how they can be used together with Azure Databricks. Check out my [blog](https://github.com/ryanchynoweth44/AzureMachineLearningWithDatabricks/blob/master/AzureMLvsMLFlow/Docs/AzureMLAndMLFlow.md) discussing the tools at a high-level. 
-
 
 ## Demos
 
@@ -30,8 +22,14 @@ Please complete the following in order for an end to end implementation:
 1. [Cross Validation with MLFlow](./AzureMLvsMLFlow/Docs/03_CrossValidation.md)
 1. [Cross Validation with MLFlow and Azure ML](./AzureMLvsMLFlow/Docs/04_TrainWithBoth.md)
 
-### Automation
-The walkthrough shows how to do manual deployments of models using AML Service, however, one thing to keep in mind is that typically these would be automated with build and release pipelines ([Azure DevOps](https://azure.microsoft.com/en-us/services/devops/)). If a data scientist wishes to deploy the model to a web service environment as shown in the walkthrough I would recommend the pipelines access the models directly from the model management azure machine learning workspace, while if a streaming solution is desired I would access the model directly from a databricks file system mount. 
+
+**Azure Machine Learning with VS Code and Anaconda**
+After over a year of not using Azure Machine Learning, I discovered that there has been a number of updates to where it is worth my time to explore an example training and deployment process. For this example, we will be using the titanic dataset. Please complete in the following order: 
+1. [Environment Setup](AzureMLDeployment/EnvironmentSetup.md) 
+
+
+
+
 
 ## Conclusion
 This repo aims to provide an overview of both Azure Databricks and Azure Machine Learning Services. If there are any confusing steps or errors please let me know. Any other comments or questions you can contact me at ryanachynoweth@gmail.com.
