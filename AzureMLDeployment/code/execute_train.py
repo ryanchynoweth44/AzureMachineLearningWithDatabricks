@@ -1,9 +1,10 @@
+import os
 import azureml.core
 from azureml.core import Workspace, Experiment, Environment, ScriptRunConfig, Run
 from azureml.core.authentication import ServicePrincipalAuthentication
 
 
-exp_name = 'local_training'
+exp_name = 'remote_training'
 workspace_name = os.environ.get('workspace_name')
 subscription_id = os.environ.get('subscription_id')
 resource_group = os.environ.get('resource_group')
@@ -17,13 +18,12 @@ print("Azure ML SDK Version: ", azureml.core.VERSION)
 ## this authentication method will require a 
 auth = ServicePrincipalAuthentication(tenant_id=tenant_id, service_principal_id=client_id, service_principal_password=client_secret)
 ws = Workspace.get(name=workspace_name, auth=auth, subscription_id=subscription_id, resource_group=resource_group)
+
 exp = Experiment(ws, exp_name)
 
-config = ScriptRunConfig(source_directory='AzureMLDeployment/code', script='train.py', compute_target='local')
+env = Environment.from_conda_specification(name='sklearn-env', file_path='.azureml/env.yml')
+config = ScriptRunConfig(source_directory='src', script='train.py', compute_target='cpu-cluster', environment=env)
 
-env = Environment.from_conda_specification(name='sklearn-env', file_path='AzureMLDeployment/code/env.yml')
-
-config.run_config.environment = env
 
 run = exp.submit(config)
 print(run.get_portal_url())
