@@ -25,13 +25,12 @@ Please complete the following in order for an end to end implementation:
 
 **Azure Machine Learning with VS Code and Anaconda**
 After over a year of not using Azure Machine Learning, I discovered that there has been a number of updates to where it is worth my time to explore an example training and deployment process. After going through this example, it is clear that much of the behind the scenes resources and workflow are the same but small details have been changed with new releases. For this example, we will be using the titanic dataset. Please complete in the following order: 
-1. [Environment Setup](AzureMLDeployment/Docs/EnvironmentSetup.md) 
-1. [Train a model](AzureMLDeployment/Docs/TrainModel.md)
+1. [Environment Setup](AzureMLDeployment/Docs/01_EnvironmentSetup.md) 
+1. [Train a model](AzureMLDeployment/Docs/02_TrainModel.md)
     - In this step we will train a model locally and on a remote virtual machine. In my opinion the remote compute targets are a major benefit to machine learning and prefered over other targets i.e. Databricks, because if I wanted to use Databricks for training I would write my code within the Databricks environment and follow one of the examples above. 
-1. [Create a pipeline](AzureMLDeployment/Docs/CreatePipeline.md)
-1. [Deploy Model](AzureMLDeployment/Docs/DeployModel.md)
-
-
+1. [Deploy Model](AzureMLDeployment/Docs/03_DeployModel.md)
+1. [Create a pipeline](AzureMLDeployment/Docs/04_CreatePipeline.md)
+1. [Redeploy Model and Pipeline](AzureMLDeployment/Docs/04_CreatePipeline.md)
 
 
 ## Conclusion
