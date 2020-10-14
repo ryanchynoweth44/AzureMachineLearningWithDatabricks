@@ -7,7 +7,7 @@ Please note that I did attempt to train the model locally as well but ran into a
 
 ### Training Script
 
-To train the model on a remote compute target we will first need to create a [training script](../src/train.py). 
+To train the model on a remote compute target we will first need to create a [training script](../code/src/train.py). 
 ```python
 import pandas as pd
 import numpy as np
@@ -83,7 +83,7 @@ dependencies:
 
 ### Orchestration Script  
 
-Next we will **create and execute** our orchestration script. The following code has been altered to allow for local execution, but notice that the ()[] script in our repository   
+Next we will **create and execute** our orchestration script. The following code has been altered to allow for local execution, but notice that the (deploy_model.py)[../code/src/execute_train.py] script in our repository uses the values based on run context.  
 ```python
 import os
 import azureml.core
@@ -91,13 +91,13 @@ from azureml.core import Workspace, Experiment, Environment, ScriptRunConfig, Ru
 from azureml.core.authentication import ServicePrincipalAuthentication
 
 
-exp_name = 'remote_training'
-workspace_name = os.environ.get('workspace_name')
-subscription_id = os.environ.get('subscription_id')
-resource_group = os.environ.get('resource_group')
-tenant_id = os.environ.get('tenant_id')
-client_id = os.environ.get('client_id')
-client_secret = os.environ.get('client_secret')
+exp_name = 'titanic_training'
+workspace_name = ""
+subscription_id = ""
+resource_group = ""
+tenant_id = ""
+client_id = ""
+client_secret = ""
 print("Azure ML SDK Version: ", azureml.core.VERSION)
 
 # connect to your aml workspace
