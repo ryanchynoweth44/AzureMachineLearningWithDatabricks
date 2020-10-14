@@ -4,13 +4,17 @@ from azureml.core.compute import ComputeTarget, AmlCompute
 from azureml.core.compute_target import ComputeTargetException
 from azureml.core.authentication import ServicePrincipalAuthentication
 
-workspace_name = os.environ.get('workspace_name')
-subscription_id = os.environ.get('subscription_id')
-resource_group = os.environ.get('resource_group')
-tenant_id = os.environ.get('tenant_id')
-client_id = os.environ.get('client_id')
-client_secret = os.environ.get('client_secret')
+ws = Workspace.from_config()
+kv = ws.get_default_keyvault()
+
+workspace_name = ws.name
+subscription_id = kv.get_secret('subscriptionId')
+resource_group = kv.get_secret('resourceGroup')
+tenant_id = kv.get_secret('tenantId')
+client_id = kv.get_secret('clientId')
+client_secret = kv.get_secret('clientSecret')
 print("Azure ML SDK Version: ", azureml.core.VERSION)
+
 
 # connect to your aml workspace
 ## NOTE: you can use Workspace.create to create a workspace using Python.  

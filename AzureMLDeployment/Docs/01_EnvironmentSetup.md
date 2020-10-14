@@ -32,38 +32,62 @@ All code for this demo is in the [code](code) directory, but all commands should
     ```
 
 
-1. Once the above steps are complete, we will create a compute cluster in for remote training of experiments. The following steps can be found in the [create_cluster.py](../code/create_cluster.py) script. 
+1. Once the above steps are complete, we will want to set up our development environment. This includes entering secrets into our Azure Key Vault. For reference use the [create_secrets.py](../code/create_secrets.py) script. Please supply the appropriate variables below and notice that we save our configuration to a local config file.  
     ```python
-    # import libraries
+    import os 
+    from azureml.core import Workspace
+    from azureml.core.authentication import ServicePrincipalAuthentication
+
+    workspace_name = ""
+    subscription_id = ""
+    resource_group = ""
+    tenant_id = ""
+    client_id = ""
+    client_secret = ""
+
+
+    auth = ServicePrincipalAuthentication(tenant_id=tenant_id, service_principal_id=client_id, service_principal_password=client_secret)
+    ws = Workspace.get(name=workspace_name, auth=auth, subscription_id=subscription_id, resource_group=resource_group)
+
+    kv = ws.get_default_keyvault()
+
+    kv.set_secret('workspaceName',workspace_name)
+    kv.set_secret('subscriptionId',subscription_id)
+    kv.set_secret('resourceGroup',resource_group)
+    kv.set_secret('tenantId',tenant_id)
+    kv.set_secret('clientId',client_id)
+    kv.set_secret('clientSecret',client_secret)
+
+    ws.write_config()
+    ```
+
+1. Next we will create a compute cluster using our [create_cluster.py](../code/create_cluster.py) script. This process creates a remote compute environment that allows us to launch individual experiment runs on different compute engines. The remote compute feature is formally known as Azure Batch AI. Notice in the script we use the configuration file from the previous step to connect and obtain our secrets.  
+    ```python
     import os 
     from azureml.core import Workspace
     from azureml.core.compute import ComputeTarget, AmlCompute
     from azureml.core.compute_target import ComputeTargetException
     from azureml.core.authentication import ServicePrincipalAuthentication
-    ``` 
 
-1. Set environment variables. You can hardcode these or use the os environment variables like I did. 
-    ```python
-    workspace_name = os.environ.get('workspace_name')
-    subscription_id = os.environ.get('subscription_id')
-    resource_group = os.environ.get('resource_group')
-    tenant_id = os.environ.get('tenant_id')
-    client_id = os.environ.get('client_id')
-    client_secret = os.environ.get('client_secret')
+    ws = Workspace.from_config()
+    kv = ws.get_default_keyvault()
+
+    workspace_name = ws.name
+    subscription_id = kv.get_secret('subscriptionId')
+    resource_group = kv.get_secret('resourceGroup')
+    tenant_id = kv.get_secret('tenantId')
+    client_id = kv.get_secret('clientId')
+    client_secret = kv.get_secret('clientSecret')
     print("Azure ML SDK Version: ", azureml.core.VERSION)
-    ```
 
-1. Connect to your workspace using the service principal. 
-    ```python
+
     # connect to your aml workspace
     ## NOTE: you can use Workspace.create to create a workspace using Python.  
     ## this authentication method will require a 
     auth = ServicePrincipalAuthentication(tenant_id=tenant_id, service_principal_id=client_id, service_principal_password=client_secret)
     ws = Workspace.get(name=workspace_name, auth=auth, subscription_id=subscription_id, resource_group=resource_group)
-    ```
 
-1. Create your cluster. In our case we are deploying a 0-4 node cluster of STANDARD_D2_V2 machines that will auto-terminate after 30 minutes. Please note that these clusters allow us to launch multiple experiements in parallel and do not allow for distributed machine learning. The parallel training is most commonly used during hyperparameter tuning.  
-    ```python
+
     # Choose a name for your CPU cluster
     cpu_cluster_name = "cpu-cluster"
 

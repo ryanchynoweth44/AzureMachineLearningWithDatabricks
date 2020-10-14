@@ -103,14 +103,12 @@ service.wait_for_deployment(show_output=True)
 
 
 
-
 ### Test the Service 
 
-Using the same script above we can test our web service. You will notice that we preprocess all data before sending it to the API. There are a few different options for data preprocessing: 
+Using the same script above we can test our web service. You will notice that we preprocess all data before sending it to the API. There are a couple different options for data preprocessing: 
 1. Preprocess before sending the request (which is what we do here). 
-1. Leverage pipelines to execute preprocessing by a different service (next example)
 1. Preprocess data within the API (not shown in this repo). 
-    1. Essentially we would add another method to our `score.py` file that would process the data when the API receives it. This is usually ideal for small transformations but machine learning often requires a lot of transformations for a machine learning dataset (data scaling, aggregation, query additional data etc.) so a pipeline is usually the best option. 
+    1. Essentially we would add another method to our `score.py` file that would process the data when the API receives it. 
 
 First we will load our data.  
 ```python

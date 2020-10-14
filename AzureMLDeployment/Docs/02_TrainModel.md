@@ -83,7 +83,7 @@ dependencies:
 
 ### Orchestration Script  
 
-Next we will **create and execute** our orchestration script.  
+Next we will **create and execute** our orchestration script. The following code has been altered to allow for local execution, but notice that the ()[] script in our repository   
 ```python
 import os
 import azureml.core
